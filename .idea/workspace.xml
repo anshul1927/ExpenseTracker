@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ExpenseTracker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ExpenseTracker.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExpenseTracker/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExpenseTracker/settings.py" afterDir="false" />
-    </list>
+    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="user model class" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,8 +70,16 @@
       <workItem from="1644955072624" duration="191000" />
       <workItem from="1644955278924" duration="1385000" />
       <workItem from="1644991748113" duration="3616000" />
-      <workItem from="1644996886131" duration="6487000" />
+      <workItem from="1644996886131" duration="6790000" />
     </task>
+    <task id="LOCAL-00001" summary="user model class">
+      <created>1645016219100</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1645016219100</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -93,5 +95,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="user model class" />
+    <option name="LAST_COMMIT_MESSAGE" value="user model class" />
   </component>
 </project>
