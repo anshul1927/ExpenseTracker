@@ -3,4 +3,9 @@ from . import models
 # Register your models here.
 
 
-admin.site.register(models.User)
+@admin.register(models.User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['first_name', 'last_name', 'email']
+
+    class Meta:
+        ordering = ['first_name', 'last_name']
