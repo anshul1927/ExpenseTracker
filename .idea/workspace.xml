@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="Configured the admin file of each app">
+    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="Group model">
+      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExpenseTracker/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExpenseTracker/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/expenses/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/expenses/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,21 +101,7 @@
       <option name="project" value="LOCAL" />
       <updated>1645023593060</updated>
     </task>
-    <task id="LOCAL-00003" summary="Configured the admin file of each app">
-      <created>1645127123643</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1645127123643</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Configured the admin file of each app">
-      <created>1645163027529</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1645163027529</updated>
-    </task>
-    <option name="localTasksCounter" value="5" />
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,7 +121,6 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="user model class" />
     <MESSAGE value="Group and Expense model" />
-    <MESSAGE value="Configured the admin file of each app" />
-    <option name="LAST_COMMIT_MESSAGE" value="Configured the admin file of each app" />
+    <option name="LAST_COMMIT_MESSAGE" value="Group and Expense model" />
   </component>
 </project>

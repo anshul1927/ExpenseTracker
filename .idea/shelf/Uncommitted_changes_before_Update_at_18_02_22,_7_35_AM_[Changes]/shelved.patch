@@ -1,0 +1,83 @@
+Index: users/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.db import models\nfrom django.utils.translation import gettext_lazy as _\n# Create your models here.\n\n\nclass User(models.Model):\n    \"\"\"Custom User Model\"\"\"\n    first_name = models.CharField(_(\"first name\"), max_length=30, blank=True, default=\"First Name\")\n    last_name = models.CharField(_(\"Last name\"), max_length=30, blank=True, default=\"Last Name\")\n    email = models.EmailField(_(\"Email ID\"), blank=True, default=\"Email ID\")\n    password = models.CharField(_(\"Password\"),max_length=40, blank=True, default=\"Password\")
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/users/models.py b/users/models.py
+--- a/users/models.py	(revision 0bb263183666351d0b3230ffb94f74e62ba409d4)
++++ b/users/models.py	(date 1645149768867)
+@@ -1,5 +1,7 @@
+ from django.db import models
+ from django.utils.translation import gettext_lazy as _
++
++
+ # Create your models here.
+ 
+ 
+@@ -8,4 +10,6 @@
+     first_name = models.CharField(_("first name"), max_length=30, blank=True, default="First Name")
+     last_name = models.CharField(_("Last name"), max_length=30, blank=True, default="Last Name")
+     email = models.EmailField(_("Email ID"), blank=True, default="Email ID")
+-    password = models.CharField(_("Password"),max_length=40, blank=True, default="Password")
+\ No newline at end of file
++    password = models.CharField(_("Password"), max_length=40, blank=True, default="Password")
++
++
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"2c546504-127d-4cf3-9701-fc21bdbbcbd2\" name=\"Changes\" comment=\"user model class\" />\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"DjangoConsoleOptions\" custom-start-script=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\">\n    <option name=\"myCustomStartScript\" value=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectId\" id=\"24yEYE4WqTETM2RfIN0I7CRLGQK\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\n    <property name=\"SHARE_PROJECT_CONFIGURATION_FILES\" value=\"true\" />\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\n    <property name=\"settings.editor.selected.configurable\" value=\"preferences.pluginManager\" />\n  </component>\n  <component name=\"RunManager\">\n    <configuration name=\"ExpenseTracker\" type=\"Python.DjangoServer\" factoryName=\"Django server\">\n      <module name=\"ExpenseTracker\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <envs>\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\n        <env name=\"DJANGO_SETTINGS_MODULE\" value=\"ExpenseTracker.settings\" />\n      </envs>\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <option name=\"launchJavascriptDebuger\" value=\"false\" />\n      <option name=\"port\" value=\"8000\" />\n      <option name=\"host\" value=\"\" />\n      <option name=\"additionalOptions\" value=\"\" />\n      <option name=\"browserUrl\" value=\"\" />\n      <option name=\"runTestServer\" value=\"false\" />\n      <option name=\"runNoReload\" value=\"false\" />\n      <option name=\"useCustomRunCommand\" value=\"false\" />\n      <option name=\"customRunCommand\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"2c546504-127d-4cf3-9701-fc21bdbbcbd2\" name=\"Changes\" comment=\"\" />\n      <created>1644594474979</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1644594474979</updated>\n      <workItem from=\"1644594484511\" duration=\"655000\" />\n      <workItem from=\"1644955072624\" duration=\"191000\" />\n      <workItem from=\"1644955278924\" duration=\"1385000\" />\n      <workItem from=\"1644991748113\" duration=\"3616000\" />\n      <workItem from=\"1644996886131\" duration=\"6790000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"user model class\">\n      <created>1645016219100</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645016219100</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"2\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"user model class\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"user model class\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 0bb263183666351d0b3230ffb94f74e62ba409d4)
++++ b/.idea/workspace.xml	(date 1645149768913)
+@@ -1,7 +1,10 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="user model class" />
++    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="user model class">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -70,7 +73,9 @@
+       <workItem from="1644955072624" duration="191000" />
+       <workItem from="1644955278924" duration="1385000" />
+       <workItem from="1644991748113" duration="3616000" />
+-      <workItem from="1644996886131" duration="6790000" />
++      <workItem from="1644996886131" duration="11138000" />
++      <workItem from="1645085631626" duration="2014000" />
++      <workItem from="1645149067358" duration="411000" />
+     </task>
+     <task id="LOCAL-00001" summary="user model class">
+       <created>1645016219100</created>
+@@ -79,7 +84,21 @@
+       <option name="project" value="LOCAL" />
+       <updated>1645016219100</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="user model class">
++      <created>1645016408229</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1645016408229</updated>
++    </task>
++    <task id="LOCAL-00003" summary="user model class">
++      <created>1645016454424</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1645016454424</updated>
++    </task>
++    <option name="localTasksCounter" value="4" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
