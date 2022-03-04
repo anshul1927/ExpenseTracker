@@ -5,7 +5,7 @@ from . import models
 
 @admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email']
+    list_display = ['id', 'first_name', 'last_name', 'email']
 
     class Meta:
         ordering = ['first_name', 'last_name']

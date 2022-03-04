@@ -35,5 +35,3 @@ class User(AbstractBaseUser):
     def __str__(self) -> str:
         return self.first_name
 
-    def __str__(self) -> str:
-        return self.email
