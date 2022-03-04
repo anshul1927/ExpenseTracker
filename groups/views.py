@@ -1,5 +1,7 @@
 import imp
 from multiprocessing.spawn import import_main_path
+
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.views.generic import ListView
@@ -9,6 +11,8 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from expenses.models import Expense
 from .models import Group, GroupToUser
 from .serializers import GroupSerializer, GroupToUserSerializer, GroupUserSerializer
 from datetime import datetime
@@ -214,9 +218,23 @@ class delete_group(APIView):
             }), status=500)
 
 
+@api_view()
+def UserGroupTotalDebt(request, id):
+    token = request.COOKIES.get('jwt')
+    if not token:
+        raise AuthenticationFailed('Unauthenticated!')
 
+    try:
+        print(token)
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        print(payload)
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Unauthenticated!')
 
-
+    user_id = payload['id']
+    result = Expense.objects.select_related('expense_user').filter(group_id=id, users_id=user_id).aggregate(
+        sum=Sum('outstanding'))
+    return Response(result)
 
 # # Create your views here.
 

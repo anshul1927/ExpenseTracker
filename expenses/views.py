@@ -71,7 +71,3 @@ class ExpenseUsers(APIView):
         return Response(serializer.data)
 
 
-@api_view()
-def UserGroupTotalDebt(request, id):
-    result = Expense.objects.select_related('expense_user').filter(group_id=id, users_id=).aggregate(sum=Sum('outstanding'))
-    return Response()

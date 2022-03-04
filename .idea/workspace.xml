@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="Configured the admin file of each app">
+    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="EXPENSE APIS">
+      <change beforePath="$PROJECT_DIR$/.idea/ExpenseTracker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ExpenseTracker.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExpenseTracker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExpenseTracker/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/expenses/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/expenses/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/groups/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/expenses/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/expenses/migrations/0002_expensetouser_amount_owed_expensetouser_is_active_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/expenses/migrations/0003_rename_payee_id_expense_created_by_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/expenses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/expenses/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/groups/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/migrations/0002_alter_user_first_name_alter_user_last_name.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/migrations/0002_alter_user_first_name_alter_user_last_name.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/migrations/0002_alter_user_first_name_alter_user_last_name.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/migrations/0003_user_last_login_alter_user_password.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +26,11 @@
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="InvalidFacetManager">
@@ -99,7 +111,21 @@
       <option name="project" value="LOCAL" />
       <updated>1645023593060</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="EXPENSE APIS">
+      <created>1646382896276</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1646382896276</updated>
+    </task>
+    <task id="LOCAL-00004" summary="EXPENSE APIS">
+      <created>1646382935237</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1646382935237</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -110,7 +136,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -119,6 +157,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="user model class" />
     <MESSAGE value="Group and Expense model" />
-    <option name="LAST_COMMIT_MESSAGE" value="Group and Expense model" />
+    <MESSAGE value="EXPENSE APIS" />
+    <option name="LAST_COMMIT_MESSAGE" value="EXPENSE APIS" />
   </component>
 </project>
