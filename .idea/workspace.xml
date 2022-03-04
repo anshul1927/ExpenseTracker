@@ -2,13 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="Configured the admin file of each app">
+      <change beforePath="$PROJECT_DIR$/.idea/ExpenseTracker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ExpenseTracker.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_02_22,_7_35_AM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_18_02_22__7_35_AM__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExpenseTracker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExpenseTracker/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExpenseTracker/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExpenseTracker/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/expenses/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/expenses/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/groups/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/groups/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/groups/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/migrations/0002_alter_user_first_name_alter_user_last_name.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/migrations/0002_alter_user_first_name_alter_user_last_name.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +54,8 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RunManager">
     <configuration name="ExpenseTracker" type="Python.DjangoServer" factoryName="Django server">
@@ -84,6 +96,7 @@
       <workItem from="1644955278924" duration="1385000" />
       <workItem from="1644991748113" duration="3616000" />
       <workItem from="1644996886131" duration="6790000" />
+      <workItem from="1646229878514" duration="22481000" />
     </task>
     <task id="LOCAL-00001" summary="user model class">
       <created>1645016219100</created>

@@ -16,6 +16,11 @@ class UserProfileManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+    def signIn(self, email, password=None) -> "User":
+        if not email:
+            raise ValueError('Invalid Email')
+        email = self.normalize_email(email)
+        user = self.model(email)
 
 
 class User(AbstractBaseUser):

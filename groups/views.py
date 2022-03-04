@@ -1,57 +1,267 @@
+import imp
+from multiprocessing.spawn import import_main_path
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.views.generic import ListView
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Group, GroupToUser
-from .serializers import GroupSerializer, GroupToUserSerializer
+from .serializers import GroupSerializer, GroupToUserSerializer, GroupUserSerializer
+from datetime import datetime
+import json
+import jwt
+from .models import User
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.decorators import api_view, renderer_classes
 
 
-# Create your views here.
+def _same_groupname_user_exists(createdby, _group_name):
+    try:
+        group_name_list = list(
+            GroupToUser.objects.filter(user_id=createdby).values_list(flat=False))
 
-class GroupsList(APIView):
-    def get(self, request):
-        queryset = Group.objects.all()
-        serializer = GroupSerializer(queryset, many=True)
-        return Response(serializer.data)
+        print(group_name_list)
+        if _group_name in group_name_list:
+            return True
+        return False
+    except Exception as e:
+        print(e)
+        return True
+
+
+# @csrf_exempt
+# @login_required
+class create_group(APIView):
+
+    def post(self, request) -> Response:
+        try:
+
+            token = request.COOKIES.get('jwt')
+            if not token:
+                raise AuthenticationFailed('Unauthenticated!')
+
+            try:
+                print(token)
+                payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+                print(payload)
+            except jwt.ExpiredSignatureError:
+                raise AuthenticationFailed('Unauthenticated!')
+
+            # user = User.objects.filter(id=payload['id']).first()
+            _user_id = payload['id']
+            _group_name = request.POST.get('group_name')
+
+            _group_type = request.POST.get('type')
+            _description = request.POST.get('description')
+            _user_ids_list = json.loads(request.POST.get('users'))
+            createdby = User.objects.filter(id=_user_id).first()
+
+            if not _same_groupname_user_exists(createdby, _group_name):
+                _group_obj = Group(group_name=_group_name, group_type=_group_type, group_description=_description,
+                                   created_at=datetime.utcnow(), created_by=createdby, is_active=1)
+
+                _group_obj.save()
+                _user_ids_list.append(_user_id)
+                list_user_obj = User.objects.filter(id__in=_user_ids_list)
+                for user_obj in list_user_obj:
+                    GroupToUser.objects.create(group_id=_group_obj, user_id=user_obj, is_active=1)
+                return Response(json.dumps({
+                    'message': 'Group Created Successfully',
+                    'status': 'success'
+                }), status=200)
+            else:
+                return Response(json.dumps({
+                    'message': 'Same Name Group already exists for user',
+                    'status': 'fail'
+                }), status=400)
+        except Exception as e:
+            print(e)
+            error_msg = "Internal Error Occurred"
+            return Response(json.dumps({
+                'message': error_msg,
+                'status': 'fail'
+            }), status=500)
+
+
+class get_group_data_for_user(ListAPIView):
+    serializer_class = GroupSerializer
+
+    def get(self, request) -> Response:
+        try:
+            token = request.COOKIES.get('jwt')
+            if not token:
+                raise AuthenticationFailed('Unauthenticated!')
+
+            try:
+                print(token)
+                payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+                print(payload)
+            except jwt.ExpiredSignatureError:
+                raise AuthenticationFailed('Unauthenticated!')
+
+            _user_id = payload['id']
+            _user = User.objects.filter(id=_user_id).first()
+
+            if not _user:
+                return Response(json.dumps({
+                    'message': 'User Invalid / Inactive',
+                    'status': 'Fail'
+                }), status=400)
+
+            _group_obj_list = GroupToUser.objects.filter(user_id=_user).values_list('group_id', flat=True)
+            _list_group_id = list(_group_obj_list)
+
+            _group_data = Group.objects.filter(id__in=_list_group_id).values()
+
+            serializer = GroupSerializer(_group_data, many=True)
+            # print(serializer.data)
+
+            # queryset = _group_data.first()
+            # print(queryset)
+            # print(type(_group_data))
+            # return Response(json.dumps({
+            #     'data': serializer.data,
+            #     'status': 'Success'
+            # }, default=str), status=200)
+            return Response(_group_data)
+        except Exception as e:
+            print(e)
+            error_msg = "Internal Error Occurred"
+            return Response(json.dumps({
+                'message': error_msg,
+                'status': 'Fail'
+            }), status=500)
+
+
+class get_group_detail(APIView):
+    serializer_class = GroupSerializer
 
     def post(self, request):
-        serializer = GroupSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        try:
+            _group_id = request.POST.get('group_id')
+            _group_obj = Group.objects.filter(id=_group_id, is_active=1).values()
+            print(_group_obj.exists())
+            if not _group_obj.exists():
+                return Response(json.dumps({
+                    'message': 'Group not exist',
+                    'status': 'fail'
+                }), status=400)
+
+            _group_details = list(_group_obj)[0]
+            if None in [_group_obj]:
+                return Response(json.dumps({
+                    'message': 'User Invalid / Inactive',
+                    'status': 'fail'
+                }), status=400)
+
+            _group_users = GroupToUser.objects.filter(group_id=_group_obj.first()['id']).values_list('user_id_id',
+                                                                                                     flat=True)
+            _list_users = list(_group_users)
+            _list_user_objs = list(User.objects.filter(id__in=_list_users).values())
+            _group_details['users'] = _list_user_objs
+            # serializer = GroupUserSerializer(_group_details, many=True)
+            # print(_group_details)
+            # print(serializer.data)
+
+            return Response(_group_details)
+            # return Response(json.dumps({
+            #     'data': _group_details,
+            #     'status': 'success'
+            # }, default=str), status=200)
+        except Exception as e:
+            error_msg = "Internal Error Occurred"
+            print(e)
+            return Response(json.dumps({
+                'message': error_msg,
+                'status': 'fail'
+            }), status=500)
 
 
-class GroupDetails(APIView):
-    def get(self, request, id):
-        group = get_object_or_404(Group, pk=id)
-        serializer = GroupSerializer(group)
-        return Response(serializer.data)
-
-    def put(self, request, id):
-        group = get_object_or_404(Group, pk=id)
-        serializer = GroupSerializer(group, data=request.data)
-        serializer.is_valid()
-        serializer.save()
-        return Response(serializer.data)
-
-    def delete(self, request, id):
-        group = get_object_or_404(Group, pk=id)
-        group.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class GroupUsersList(APIView):
-    def get(self, request, id):
-        queryset = GroupToUser.objects.filter(group_id=id)
-        serializer = GroupToUserSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class AddUserToGroup(APIView):
+class delete_group(APIView):
     def post(self, request):
-        serializer = GroupToUserSerializer(data=request.data)
-        serializer.is_valid()
-        serializer.save()
-        return Response(serializer.data)
+        try:
+            _group_id = request.POST.get('group_id')
+            print(_group_id)
+            __group_obj = Group.objects.filter(id=_group_id, is_active=1)
+            print(__group_obj)
+
+            if None in __group_obj:
+                return Response(json.dumps({
+                    'message': 'Invalid Request',
+                    'status': 'fail'
+                }), status=400)
+
+            print(__group_obj)
+            __group_obj.update(**{
+                'is_active': 0,
+                'deleted_at': datetime.utcnow()
+            })
+
+            print(__group_obj)
+            return Response(json.dumps({
+                'message': 'Group Deleted Successfully',
+                'status': 'success'
+            }), status=200)
+        except Exception as e:
+            error_msg = "Internal Error Occurred"
+            return HttpResponse(json.dumps({
+                'message': error_msg,
+                'status': 'fail'
+            }), status=500)
+
+
+
+
+
+
+# # Create your views here.
+
+# class GroupsList(APIView):
+#     def get(self, request):
+#         queryset = Group.objects.all()
+#         serializer = GroupSerializer(queryset, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request):
+#         serializer = GroupSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
+
+
+# class GroupDetails(APIView):
+#     def get(self, request, id):
+#         group = get_object_or_404(Group, pk=id)
+#         serializer = GroupSerializer(group)
+#         return Response(serializer.data)
+
+#     def put(self, request, id):
+#         group = get_object_or_404(Group, pk=id)
+#         serializer = GroupSerializer(group, data=request.data)
+#         serializer.is_valid()
+#         serializer.save()
+#         return Response(serializer.data)
+
+#     def delete(self, request, id):
+#         group = get_object_or_404(Group, pk=id)
+#         group.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# class GroupUsersList(APIView):
+#     def get(self, request, id):
+#         queryset = GroupToUser.objects.filter(group_id=id)
+#         serializer = GroupToUserSerializer(queryset, many=True)
+#         return Response(serializer.data)
+
+
+# class AddUserToGroup(APIView):
+#     def post(self, request):
+#         serializer = GroupToUserSerializer(data=request.data)
+#         serializer.is_valid()
+#         serializer.save()
+#         return Response(serializer.data)
