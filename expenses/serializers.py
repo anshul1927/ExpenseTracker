@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Expense, ExpenseToUser
+from .models import Expense, ExpenseToUser, Debts
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
@@ -8,8 +8,13 @@ class ExpenseSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 class ExpenseToUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExpenseToUser
+        fields = "__all__"
+
+
+class DebtsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Debts
         fields = "__all__"

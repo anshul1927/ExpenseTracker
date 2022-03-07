@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+
+from groups.models import Group
 from users.models import User
 from .models import Expense, ExpenseToUser, Debts
 from .serializers import ExpenseSerializer, ExpenseToUserSerializer
@@ -33,9 +35,10 @@ def add_expense_to_user(expense_id, list_of_user, total_amt, payers):
         exp_to_usr.save()
 
 
-def add_users_debt(debts, expense_id):
+def add_users_debt(debts, expense_id, group_id):
     for debt in debts:
         user_debt = Debts(exp_id=get_object_or_404(Expense, pk=expense_id),
+                          group_id=get_object_or_404(Group, pk=group_id),
                           payer=get_object_or_404(User, pk=debt[0]),
                           bearer=get_object_or_404(User, pk=debt[1]),
                           amt=debts[debt])
@@ -60,7 +63,7 @@ class ExpenseList(APIView):
         add_expense_to_user(serializer.data['id'], shared_btw_users,
                             data_dict['total_amount'],
                             payers)
-        add_users_debt(debts, serializer.data['id'])
+        add_users_debt(debts, serializer.data['id'], serializer.data['group_id'])
         return Response(serializer.data)
 
 
@@ -71,3 +74,12 @@ class ExpenseUsers(APIView):
         return Response(serializer.data)
 
 
+def update_user_balance(expense_id, sender, reciever, amt):
+    bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, payer=sender, bearer=reciever)
+    bal_obj.amt_paid += amt
+    bal_obj.outstanding += amt
+    bal_obj.save()
+    bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, payer=reciever, bearer=sender)
+    bal_obj.amt_receive += amt
+    bal_obj.outstanding -= amt
+    bal_obj.save()

@@ -73,13 +73,13 @@ class signIn(APIView):
 
     def post(self, request) -> Response:
         print(request)
-        email = request.POST['email']
-        password = request.POST['password']
+        email = request.POST.get('email')
+        password = request.POST.get('password')
         print(email)
         print(password)
         user = models.User.objects.filter(email=email).first()
         # user = authenticate(email=email, password=password)
-
+        print(user)
         if user.check_password(password) is not None:
             print("Hello")
         print("1")

@@ -12,7 +12,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from expenses.models import Expense
+from expenses.models import Expense, ExpenseToUser, Debts
+from expenses.serializers import DebtsSerializer
+from expenses.views import update_user_balance
 from .models import Group, GroupToUser
 from .serializers import GroupSerializer, GroupToUserSerializer, GroupUserSerializer
 from datetime import datetime
@@ -58,7 +60,7 @@ class create_group(APIView):
             # user = User.objects.filter(id=payload['id']).first()
             _user_id = payload['id']
             _group_name = request.POST.get('group_name')
-
+            print(_group_name)
             _group_type = request.POST.get('type')
             _description = request.POST.get('description')
             _user_ids_list = json.loads(request.POST.get('users'))
@@ -218,23 +220,60 @@ class delete_group(APIView):
             }), status=500)
 
 
-@api_view()
-def UserGroupTotalDebt(request, id):
-    token = request.COOKIES.get('jwt')
-    if not token:
-        raise AuthenticationFailed('Unauthenticated!')
+class UserGroupDebts(APIView):
+    def get(self, request, id):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
 
-    try:
-        print(token)
-        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        print(payload)
-    except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Unauthenticated!')
+        try:
+            print(token)
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+            print(payload)
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
 
-    user_id = payload['id']
-    result = Expense.objects.select_related('expense_user').filter(group_id=id, users_id=user_id).aggregate(
-        sum=Sum('outstanding'))
-    return Response(result)
+        user_id = payload['id']
+        # result = Expense.objects.prefetch_related('expense_user').all()
+        queryset = Debts.objects.filter(group_id=id, payer=user_id)
+        serializer = DebtsSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+
+class Pay(APIView):
+    def post(seif, request, id):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        try:
+            print(token)
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+            print(payload)
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
+        print(1)
+        user_id = payload['id']
+        print(user_id)
+
+        expense_id = request.POST.get('expense_id')
+        receive = request.POST.get('bearer')
+        pay_amt = request.POST.get('amount')
+        print(expense_id)
+        print(pay_amt)
+        print(receive)
+        print(id)
+        pay_obj = get_object_or_404(Debts, exp_id=expense_id, group_id=id, payer=user_id, bearer=receive)
+        print(3)
+        if pay_amt == pay_obj.amt:
+            pay_obj.is_paid = True
+        elif pay_amt < pay_obj.amt:
+            pay_obj.amt -= pay_amt
+        else:
+            return Response("Enter the Correct Amount")
+        update_user_balance(expense_id, user_id, receive, pay_amt)
+        pay_obj.save()
 
 # # Create your views here.
 
