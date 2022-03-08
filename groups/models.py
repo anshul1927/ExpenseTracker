@@ -1,6 +1,10 @@
-from django.db import models
-from users.models import User
+import hashlib
+from time import mktime
 
+from django.db import models
+from django.urls import reverse
+
+from users.models import User
 
 # Create your models here.
 
@@ -25,6 +29,18 @@ class Group(models.Model):
 
     def __dir__(self) -> str:
         return self.group_name
+
+    @property
+    def invite_code(self):
+        timestamp = int(mktime(self.created_at.timetuple())*1000)
+        digest = hashlib.sha1(str(timestamp) + str(self.pk)).hexdigest()
+        print("digest :- ", digest)
+        return str(digest)[2:12]
+
+    @property
+    def invite_url(self):
+        return reverse('invite_detail', kwargs={'pk': self.pk, 'hash': self.invite_code})
+
 
     class Meta:
         unique_together = ['group_name', 'created_by']

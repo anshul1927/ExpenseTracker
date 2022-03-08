@@ -6,9 +6,14 @@ from . import models
 
 @admin.register(models.Expense)
 class ExpenseAdmin(admin.ModelAdmin):
-    list_display = ['expense_name', 'group_id', 'payee_id', 'total_amount']
+    list_display = ['expense_name', 'group_id', 'created_by', 'total_amount']
 
 
 @admin.register(models.ExpenseToUser)
 class ExpenseToUserAdmin(admin.ModelAdmin):
-    list_display = ['expense_id', 'users_id', 'amount_paid']
+    list_display = ['expense_id', 'users_id', 'initial_amt_paid', 'amt_receive', 'amt_paid', 'outstanding']
+
+
+@admin.register(models.Debts)
+class DebtsAdmin(admin.ModelAdmin):
+    list_display = ['exp_id','group_id', 'payer', 'bearer', 'amt', 'is_paid']

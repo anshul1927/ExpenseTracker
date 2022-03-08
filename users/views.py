@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from groups.models import GroupToUser, Group
 from users import serializers, models
 from django.http import HttpResponse
 import json
@@ -106,6 +109,7 @@ class signIn(APIView):
         }
         login(request, user)
         return response
+            # redirect(reverse("profile", kwargs={"pk": user.id}))
         # if user is not None:
         #     login(request, user)
         #     return Response("DashBoard----->" + user.__str__())
@@ -144,3 +148,33 @@ class LogoutView(APIView):
             'message': 'success'
         }
         return response
+
+
+class Profile(APIView):
+    def get(self, request, pk):
+        token = request.COOKIES.get('jwt')
+
+        print("token :- ", token)
+        if not token:
+            raise AuthenticationFailed('Unauthenticated')
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated!')
+
+        _user_id = payload['id']
+        _user_obj = User.objects.filter(id=_user_id).values()
+        # serializer = UserProfileSerializer(_user_obj)
+
+        _group_obj_list = GroupToUser.objects.filter(user_id=_user_id).values_list('group_id', flat=True)
+        _list_group_id = list(_group_obj_list)
+        print(_list_group_id)
+        _group_data = Group.objects.filter(id__in=_list_group_id).values()
+
+        print(_group_data)
+        # serializer.data['groups'] = _group_data
+        # print("----------------", serializer.data)
+        _user_obj = list(_user_obj)[0]
+        print(len(_user_obj))
+        _user_obj['groups'] = _group_data
+        return Response(_user_obj)
