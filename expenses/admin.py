@@ -16,4 +16,4 @@ class ExpenseToUserAdmin(admin.ModelAdmin):
 
 @admin.register(models.Debts)
 class DebtsAdmin(admin.ModelAdmin):
-    list_display = ['exp_id','group_id', 'payer', 'bearer', 'debt', 'amt_paid', 'is_paid']
+    list_display = ['exp_id', 'group_id', 'payer', 'bearer', 'debt', 'amt_paid', 'is_paid']

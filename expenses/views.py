@@ -7,11 +7,55 @@ from rest_framework.decorators import api_view
 
 from groups.models import Group
 from users.models import User
+from .minimum import minCashFlow
 from .models import Expense, ExpenseToUser, Debts
 from .serializers import ExpenseSerializer, ExpenseToUserSerializer
 
 
 # Create your views here.
+def get_debts_graph_arr(debts, total_members_in_expesne, user_index):
+    debts_list = list(debts.items())
+    rows, cols = (total_members_in_expesne, total_members_in_expesne)
+    arr = [[0] * cols for _ in range(rows)]
+
+    lis = list(debts.keys())
+    print(debts)
+    print(total_members_in_expesne)
+    print(user_index)
+    print(lis)
+    for i in range(len(debts)):
+        r = user_index.get(lis[i][0])
+        c = user_index.get(lis[i][1])
+        print("r :- ", r, " c :- ", c, " type(list[i] :- ", type(lis[i]))
+        arr[r][c] = debts.get(lis[i])
+    return arr
+
+
+def simplify_debts(debts, shared_btw_users):
+    user_index = {}
+    for i in range(len(shared_btw_users)):
+        user_index[shared_btw_users[i]] = i
+
+    arr = get_debts_graph_arr(debts, len(shared_btw_users), user_index)
+
+    final_debts = minCashFlow(arr, len(shared_btw_users))
+    # print(final_debts)
+
+    new_debts = {}
+    final_debts_keys = list(final_debts.keys())
+    user_index_key_list = list(user_index.keys())
+    user_index_value_list = list(user_index.values())
+
+    for i in range(len(final_debts)):
+        temp = final_debts_keys[i]
+        pos1 = user_index_value_list.index(temp[0])
+        pos2 = user_index_value_list.index(temp[1])
+        new_debts[(user_index_key_list[pos1], user_index_key_list[pos2])] = final_debts.get(final_debts_keys[i])
+
+    # print(new_debts)
+    return new_debts
+
+
 def get_debts(shared_btw_users, payers):
     dict = {}
     for payer in payers:
@@ -57,9 +101,7 @@ class ExpenseList(APIView):
         payers = data_dict.pop('payers')
         payers = {int(k): v for k, v in payers.items()}
         debts = get_debts(shared_btw_users, payers)
-        user_index = {}
-        for i in range(len(shared_btw_users)):
-            user_index[shared_btw_users[i]] = i
+        new_debts = simplify_debts(debts, shared_btw_users)
 
         serializer = ExpenseSerializer(data=data_dict)
         serializer.is_valid(raise_exception=True)
@@ -67,7 +109,7 @@ class ExpenseList(APIView):
         add_expense_to_user(serializer.data['id'], shared_btw_users,
                             data_dict['total_amount'],
                             payers)
-        add_users_debt(debts, serializer.data['id'], serializer.data['group_id'])
+        add_users_debt(new_debts, serializer.data['id'], serializer.data['group_id'])
         return Response(serializer.data)
 
 

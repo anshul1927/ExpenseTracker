@@ -59,11 +59,11 @@ class create_group(APIView):
 
             # user = User.objects.filter(id=payload['id']).first()
             _user_id = payload['id']
-            _group_name = request.POST.get('group_name')
+            _group_name = request.data.get('group_name')
             print(_group_name)
-            _group_type = request.POST.get('type')
-            _description = request.POST.get('description')
-            _user_ids_list = json.loads(request.POST.get('users'))
+            _group_type = request.data.get('type')
+            _description = request.data.get('description')
+            _user_ids_list = request.data.get('users')
             createdby = User.objects.filter(id=_user_id).first()
 
             if not _same_groupname_user_exists(createdby, _group_name):
@@ -148,7 +148,8 @@ class get_group_detail(APIView):
 
     def post(self, request):
         try:
-            _group_id = request.POST.get('group_id')
+            _group_id = request.data.get('group_id')
+            print(_group_id)
             _group_obj = Group.objects.filter(id=_group_id, is_active=1).values()
             print(_group_obj.exists())
             if not _group_obj.exists():
@@ -272,7 +273,7 @@ class Pay(APIView):
         if pay_obj.is_paid:
             return Response("Already Paid")
         elif pay_amt == remaining_debt:
-            pay_obj.amt_paid = pay_amt
+            pay_obj.amt_paid += pay_amt
             pay_obj.is_paid = True
         elif pay_amt < remaining_debt:
             pay_obj.amt_paid += pay_amt
