@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="authentication of user and group">
+    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="final code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/expenses/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/expenses/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646382181187</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="final code">
+      <created>1646729410499</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1646729410499</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -154,6 +160,7 @@
     <MESSAGE value="user model class" />
     <MESSAGE value="Group and Expense model" />
     <MESSAGE value="authentication of user and group" />
-    <option name="LAST_COMMIT_MESSAGE" value="authentication of user and group" />
+    <MESSAGE value="final code" />
+    <option name="LAST_COMMIT_MESSAGE" value="final code" />
   </component>
 </project>
