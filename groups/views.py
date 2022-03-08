@@ -188,6 +188,7 @@ class get_group_detail(APIView):
 
 
 class delete_group(APIView):
+    #serializer_class =GroupSerializer
     def post(self, request):
         try:
             _group_id = request.POST.get('group_id')
@@ -235,14 +236,15 @@ class UserGroupDebts(APIView):
 
         user_id = payload['id']
         # result = Expense.objects.prefetch_related('expense_user').all()
-        queryset = Debts.objects.filter(group_id=id, payer=user_id)
+        queryset = Debts.objects.filter(group_id=id, payer=user_id, is_paid=False)
         serializer = DebtsSerializer(queryset, many=True)
 
         return Response(serializer.data)
 
 
 class Pay(APIView):
-    def post(seif, request, id):
+    serializer_class = DebtsSerializer
+    def post(self, request, id):
         token = request.COOKIES.get('jwt')
         if not token:
             raise AuthenticationFailed('Unauthenticated!')
@@ -257,23 +259,28 @@ class Pay(APIView):
         user_id = payload['id']
         print(user_id)
 
-        expense_id = request.POST.get('expense_id')
-        receive = request.POST.get('bearer')
-        pay_amt = request.POST.get('amount')
+        expense_id = request.data.get('expense_id')
+        receive = request.data.get('bearer')
+        pay_amt = request.data.get('amount')
         print(expense_id)
         print(pay_amt)
         print(receive)
         print(id)
         pay_obj = get_object_or_404(Debts, exp_id=expense_id, group_id=id, payer=user_id, bearer=receive)
         print(3)
-        if pay_amt == pay_obj.amt:
+        remaining_debt = pay_obj.debt - pay_obj.amt_paid
+        if pay_obj.is_paid:
+            return Response("Already Paid")
+        elif pay_amt == remaining_debt:
+            pay_obj.amt_paid = pay_amt
             pay_obj.is_paid = True
-        elif pay_amt < pay_obj.amt:
-            pay_obj.amt -= pay_amt
+        elif pay_amt < remaining_debt:
+            pay_obj.amt_paid += pay_amt
         else:
             return Response("Enter the Correct Amount")
         update_user_balance(expense_id, user_id, receive, pay_amt)
         pay_obj.save()
+        return Response("Successfully Paid")
 
 # # Create your views here.
 

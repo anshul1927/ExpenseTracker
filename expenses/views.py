@@ -41,7 +41,7 @@ def add_users_debt(debts, expense_id, group_id):
                           group_id=get_object_or_404(Group, pk=group_id),
                           payer=get_object_or_404(User, pk=debt[0]),
                           bearer=get_object_or_404(User, pk=debt[1]),
-                          amt=debts[debt])
+                          debt=debts[debt])
         user_debt.save()
 
 
@@ -57,6 +57,10 @@ class ExpenseList(APIView):
         payers = data_dict.pop('payers')
         payers = {int(k): v for k, v in payers.items()}
         debts = get_debts(shared_btw_users, payers)
+        user_index = {}
+        for i in range(len(shared_btw_users)):
+            user_index[shared_btw_users[i]] = i
+
         serializer = ExpenseSerializer(data=data_dict)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -75,11 +79,11 @@ class ExpenseUsers(APIView):
 
 
 def update_user_balance(expense_id, sender, reciever, amt):
-    bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, payer=sender, bearer=reciever)
+    bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, users_id=sender)
     bal_obj.amt_paid += amt
     bal_obj.outstanding += amt
     bal_obj.save()
-    bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, payer=reciever, bearer=sender)
+    bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, users_id=reciever)
     bal_obj.amt_receive += amt
     bal_obj.outstanding -= amt
     bal_obj.save()

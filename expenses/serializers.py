@@ -15,6 +15,11 @@ class ExpenseToUserSerializer(serializers.ModelSerializer):
 
 
 class DebtsSerializer(serializers.ModelSerializer):
+    remaining_debt = serializers.SerializerMethodField()
+
+    def get_remaining_debt(self, debt_obj: Debts):
+        return debt_obj.debt - debt_obj.amt_paid
+
     class Meta:
         model = Debts
-        fields = "__all__"
+        fields = ['id', 'exp_id', 'group_id', 'payer', 'bearer',  'amt_paid', 'remaining_debt']
