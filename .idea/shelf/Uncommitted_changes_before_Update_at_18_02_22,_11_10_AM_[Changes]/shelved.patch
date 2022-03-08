@@ -1,0 +1,108 @@
+Index: groups/admin.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.contrib import admin\nfrom . import models\n# Register your models here.\n\n\n@admin.register(models.Group)\nclass GroupAdmin(admin.ModelAdmin):\n    list_display = ['name', 'group_type', 'description', 'created_at', 'created_by']\n    list_per_page = 10\n\n@admin.register(models.GroupToUser)\nclass GroupToUserAdmin(admin.ModelAdmin):\n    list_display = ['group_id', 'user_id']
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/groups/admin.py b/groups/admin.py
+--- a/groups/admin.py	(revision 8546b47a2556435b40bcf35500dac7642ae6b747)
++++ b/groups/admin.py	(date 1645130540282)
+@@ -1,13 +1,20 @@
+ from django.contrib import admin
+ from . import models
++
++
+ # Register your models here.
+ 
+ 
+ @admin.register(models.Group)
+ class GroupAdmin(admin.ModelAdmin):
+-    list_display = ['name', 'group_type', 'description', 'created_at', 'created_by']
++    list_display = ['name', 'group_type', 'description', 'created_at', 'created_by_name']
+     list_per_page = 10
++    list_select_related = ['created_by']
++
++    def created_by_name(self, group):
++        return group.created_by.first_name
++
+ 
+ @admin.register(models.GroupToUser)
+ class GroupToUserAdmin(admin.ModelAdmin):
+-    list_display = ['group_id', 'user_id']
+\ No newline at end of file
++    list_display = ['group_id', 'user_id']
+Index: ExpenseTracker/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"\"\"ExpenseTracker URL Configuration\n\nThe `urlpatterns` list routes URLs to views. For more information please see:\n    https://docs.djangoproject.com/en/4.0/topics/http/urls/\nExamples:\nFunction views\n    1. Add an import:  from my_app import views\n    2. Add a URL to urlpatterns:  path('', views.home, name='home')\nClass-based views\n    1. Add an import:  from other_app.views import Home\n    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')\nIncluding another URLconf\n    1. Import the include() function: from django.urls import include, path\n    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))\n\"\"\"\nfrom django.contrib import admin\nfrom django.urls import path\n\nurlpatterns = [\n    path('admin/', admin.site.urls),\n]\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ExpenseTracker/urls.py b/ExpenseTracker/urls.py
+--- a/ExpenseTracker/urls.py	(revision 8546b47a2556435b40bcf35500dac7642ae6b747)
++++ b/ExpenseTracker/urls.py	(date 1645127834463)
+@@ -16,6 +16,8 @@
+ from django.contrib import admin
+ from django.urls import path
+ 
++admin.site.site_header = 'Expense Tracker'
++admin.site.index_title = 'Admin'
+ urlpatterns = [
+     path('admin/', admin.site.urls),
+ ]
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"2c546504-127d-4cf3-9701-fc21bdbbcbd2\" name=\"Changes\" comment=\"Group model\">\n      <change afterPath=\"$PROJECT_DIR$/.idea/dbnavigator.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/ExpenseTracker/settings.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ExpenseTracker/settings.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/db.sqlite3\" beforeDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/expenses/admin.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/expenses/admin.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/groups/admin.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/groups/admin.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/groups/models.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/groups/models.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/users/admin.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/users/admin.py\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/users/models.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/users/models.py\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"DjangoConsoleOptions\" custom-start-script=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\">\n    <option name=\"myCustomStartScript\" value=\"import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"InvalidFacetManager\">\n    <ignored-facets>\n      <facet id=\"ExpenseTracker/invalid/Django\" />\n    </ignored-facets>\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProblemsViewState\">\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\n  </component>\n  <component name=\"ProjectId\" id=\"24yEYE4WqTETM2RfIN0I7CRLGQK\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\n    <property name=\"SHARE_PROJECT_CONFIGURATION_FILES\" value=\"true\" />\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\n    <property name=\"settings.editor.selected.configurable\" value=\"preferences.pluginManager\" />\n  </component>\n  <component name=\"RunManager\">\n    <configuration name=\"ExpenseTracker\" type=\"Python.DjangoServer\" factoryName=\"Django server\">\n      <module name=\"ExpenseTracker\" />\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\n      <option name=\"PARENT_ENVS\" value=\"true\" />\n      <envs>\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\n        <env name=\"DJANGO_SETTINGS_MODULE\" value=\"ExpenseTracker.settings\" />\n      </envs>\n      <option name=\"SDK_HOME\" value=\"\" />\n      <option name=\"WORKING_DIRECTORY\" value=\"\" />\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\n      <option name=\"launchJavascriptDebuger\" value=\"false\" />\n      <option name=\"port\" value=\"8000\" />\n      <option name=\"host\" value=\"\" />\n      <option name=\"additionalOptions\" value=\"\" />\n      <option name=\"browserUrl\" value=\"\" />\n      <option name=\"runTestServer\" value=\"false\" />\n      <option name=\"runNoReload\" value=\"false\" />\n      <option name=\"useCustomRunCommand\" value=\"false\" />\n      <option name=\"customRunCommand\" value=\"\" />\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"2c546504-127d-4cf3-9701-fc21bdbbcbd2\" name=\"Changes\" comment=\"\" />\n      <created>1644594474979</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1644594474979</updated>\n      <workItem from=\"1644594484511\" duration=\"655000\" />\n      <workItem from=\"1644955072624\" duration=\"191000\" />\n      <workItem from=\"1644955278924\" duration=\"1385000\" />\n      <workItem from=\"1644991748113\" duration=\"3616000\" />\n      <workItem from=\"1644996886131\" duration=\"6790000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"user model class\">\n      <created>1645016219100</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645016219100</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"Group and Expense model\">\n      <created>1645023593060</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645023593060</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"3\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"user model class\" />\n    <MESSAGE value=\"Group and Expense model\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Group and Expense model\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 8546b47a2556435b40bcf35500dac7642ae6b747)
++++ b/.idea/workspace.xml	(date 1645128978024)
+@@ -1,16 +1,10 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="Group model">
+-      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
++    <list default="true" id="2c546504-127d-4cf3-9701-fc21bdbbcbd2" name="Changes" comment="Configured the admin file of each app">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ExpenseTracker/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExpenseTracker/settings.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/expenses/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/expenses/admin.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ExpenseTracker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/ExpenseTracker/urls.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/groups/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/admin.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/groups/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/groups/models.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/users/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/admin.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -101,7 +95,14 @@
+       <option name="project" value="LOCAL" />
+       <updated>1645023593060</updated>
+     </task>
+-    <option name="localTasksCounter" value="3" />
++    <task id="LOCAL-00003" summary="Configured the admin file of each app">
++      <created>1645127123643</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1645127123643</updated>
++    </task>
++    <option name="localTasksCounter" value="4" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -121,6 +122,7 @@
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="user model class" />
+     <MESSAGE value="Group and Expense model" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Group and Expense model" />
++    <MESSAGE value="Configured the admin file of each app" />
++    <option name="LAST_COMMIT_MESSAGE" value="Configured the admin file of each app" />
+   </component>
+ </project>
+\ No newline at end of file
