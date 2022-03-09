@@ -1,12 +1,4 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
 from groups.models import GroupToUser, Group
-from users import serializers, models
-from django.http import HttpResponse
 import json
 from datetime import date, datetime
 from decimal import Decimal
@@ -15,7 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import authenticate, login, REDIRECT_FIELD_NAME
+from django.contrib.auth import login
 import jwt
 from users import serializers, models
 from users.models import User
@@ -23,12 +15,10 @@ from users.serializers import signInUserSerializer, UserProfileSerializer
 import datetime
 
 
-# Create your views here.
 class CreateUserAPIView(APIView):
     serializer_class = serializers.UserProfileSerializer
 
     def post(self, request) -> Response:
-        """Create a Hello msg with our name"""
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -48,27 +38,33 @@ class JsonENcoder(json.JSONEncoder):
 
 
 class getUserList(APIView):
-
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
         try:
-            print("1")
             _user_data = models.User.objects.values_list('first_name', 'last_name', 'email')
-            print("2")
             _user_list = list(_user_data)
-            print("3")
-            # return Response(json.dumps({'data': _user_list}, cls=JsonENcoder), status=200)
-            content = {'_user_data': _user_data}
-            content1 = {'_user_list':_user_list}
+            content1 = {'_user_list': _user_list}
+
             return Response(content1)
         except Exception as e:
+            print(e)
             error_msg = "Internal Error Occurred"
             return Response(json.dumps({
                 'message': error_msg,
                 'status': 'fail'
             }, cls=JsonENcoder), status=500)
 
+
+def check_user_login_or_not(request):
+    token = request.COOKIES.get('jwt')
+    if not token:
+        raise AuthenticationFailed('Unauthenticated!')
+    try:
+        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AuthenticationFailed('Unauthenticated!')
+    return payload
 
 
 class signIn(APIView):
@@ -81,14 +77,9 @@ class signIn(APIView):
         print(email)
         print(password)
         user = models.User.objects.filter(email=email).first()
-        # user = authenticate(email=email, password=password)
 
         if user.check_password(password) is not None:
             print("Hello")
-        print("1")
-        print(user)
-        print("2")
-
         if user is None:
             raise AuthenticationFailed("User not found")
         if not user.check_password(password):
@@ -105,43 +96,25 @@ class signIn(APIView):
 
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
-            'jwt': token
+            'jwt': token,
+            'url': "http://127.0.0.1:8000/users/" + str(user.id) + "/profile"
         }
         login(request, user)
+
         return response
-            # redirect(reverse("profile", kwargs={"pk": user.id}))
-        # if user is not None:
-        #     login(request, user)
-        #     return Response("DashBoard----->" + user.__str__())
-        # else:
-        #     messages.error(request, "Wrong credentials")
-        #     return Response("Error")
-
-
 
 
 class UserView(APIView):
 
     def get(self, request):
-        token = request.COOKIES.get('jwt')
-
-        print(token)
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
-
-        try:
-            print(token)
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
-
+        payload = check_user_login_or_not(request)
         user = User.objects.filter(id=payload['id']).first()
         serializer = UserProfileSerializer(user)
         return Response(serializer.data)
 
 
 class LogoutView(APIView):
-    def post(self, request):
+    def get(self, request):
         response = Response()
         response.delete_cookie('jwt')
         response.data = {
@@ -152,19 +125,10 @@ class LogoutView(APIView):
 
 class Profile(APIView):
     def get(self, request, pk):
-        token = request.COOKIES.get('jwt')
 
-        print("token :- ", token)
-        if not token:
-            raise AuthenticationFailed('Unauthenticated')
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
-
+        payload = check_user_login_or_not(request)
         _user_id = payload['id']
         _user_obj = User.objects.filter(id=_user_id).values()
-        # serializer = UserProfileSerializer(_user_obj)
 
         _group_obj_list = GroupToUser.objects.filter(user_id=_user_id).values_list('group_id', flat=True)
         _list_group_id = list(_group_obj_list)
@@ -172,8 +136,6 @@ class Profile(APIView):
         _group_data = Group.objects.filter(id__in=_list_group_id).values()
 
         print(_group_data)
-        # serializer.data['groups'] = _group_data
-        # print("----------------", serializer.data)
         _user_obj = list(_user_obj)[0]
         print(len(_user_obj))
         _user_obj['groups'] = _group_data
