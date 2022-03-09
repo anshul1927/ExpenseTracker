@@ -287,14 +287,6 @@ class UserGroupDebts(APIView):
 
         return Response(serializer.data)
 
-
-class Pay(APIView):
-    serializer_class = DebtsSerializer
-
-    def get(self, request, id):
-        response = UserGroupDebts.get(self, request, id)
-        return response
-
     def post(self, request, id):
         payload = check_user_login_or_not(request)
         print(1)
@@ -314,12 +306,22 @@ class Pay(APIView):
         if pay_obj.is_paid:
             return Response("Already Paid")
         elif pay_amt == remaining_debt:
-            pay_obj.amt_paid += pay_amt
+            pay_obj.amt_paid = pay_obj.amt_paid + pay_amt
             pay_obj.is_paid = True
         elif pay_amt < remaining_debt:
-            pay_obj.amt_paid += pay_amt
+            pay_obj.amt_paid = pay_obj.amt_paid + pay_amt
         else:
             return Response("Enter the Correct Amount")
         update_user_balance(expense_id, user_id, receive, pay_amt)
         pay_obj.save()
         return Response("Successfully Paid")
+
+
+# class Pay(APIView):
+#     serializer_class = DebtsSerializer
+#
+#     def get(self, request, id):
+#         response = UserGroupDebts.get(self, request, id)
+#         return response
+
+

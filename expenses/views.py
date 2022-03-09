@@ -123,10 +123,10 @@ class ExpenseUsers(APIView):
 
 def update_user_balance(expense_id, sender, reciever, amt):
     bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, users_id=sender)
-    bal_obj.amt_paid += amt
-    bal_obj.outstanding += amt
+    bal_obj.amt_paid = bal_obj.amt_paid +  amt
+    bal_obj.outstanding = bal_obj.outstanding + amt
     bal_obj.save()
     bal_obj = get_object_or_404(ExpenseToUser, expense_id=expense_id, users_id=reciever)
-    bal_obj.amt_receive += amt
-    bal_obj.outstanding -= amt
+    bal_obj.amt_receive = bal_obj.amt_receive + amt
+    bal_obj.outstanding = bal_obj.outstanding - amt
     bal_obj.save()

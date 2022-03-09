@@ -9,6 +9,6 @@ urlpatterns = [
     path('remove_member/', views.remove_member_from_group.as_view(), name='removeMember'),
     path('add_member/', views.add_new_member.as_view(), name='addMember'),
     path('<int:id>/debts/', views.UserGroupDebts.as_view()),
-    path('<int:id>/debts/pay/', views.Pay.as_view()),
+    # path('<int:id>/debts/pay/', views.Pay.as_view()),
     path('<int:id>/expense/', include('expenses.urls'))
 ]

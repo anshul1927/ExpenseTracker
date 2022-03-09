@@ -13,6 +13,7 @@ from users import serializers, models
 from users.models import User
 from users.serializers import signInUserSerializer, UserProfileSerializer
 import datetime
+import django.core.management.commands.runserver as runserver
 
 
 class CreateUserAPIView(APIView):
@@ -93,11 +94,12 @@ class signIn(APIView):
 
         token = jwt.encode(payload, 'secret', algorithm='HS256')
         response = Response()
+        cmd = runserver.Command()
 
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
             'jwt': token,
-            'url': "http://127.0.0.1:8000/users/" + str(user.id) + "/profile"
+            'url': 'http://' + str(cmd.default_addr) + ':' + str(cmd.default_port)+"/users/" + str(user.id) + "/profile/"
         }
         login(request, user)
 
