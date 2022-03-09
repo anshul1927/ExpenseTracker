@@ -1,26 +1,18 @@
-import imp
-from multiprocessing.spawn import import_main_path
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from django.views.generic import ListView, DetailView
-from rest_framework.decorators import api_view
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.views import APIView
-
 from expenses.models import Debts
 from expenses.serializers import DebtsSerializer
 from expenses.views import update_user_balance
+from users.views import check_user_login_or_not
 from .models import Group, GroupToUser
-from .serializers import GroupSerializer, GroupToUserSerializer, GroupUserSerializer
+from .serializers import GroupSerializer
 from datetime import datetime
 import json
 import jwt
 from .models import User
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-from rest_framework.decorators import api_view, renderer_classes
 
 
 def _same_groupname_user_exists(createdby, _group_name):
@@ -37,31 +29,17 @@ def _same_groupname_user_exists(createdby, _group_name):
         return True
 
 
-# @csrf_exempt
-# @login_required
 class create_group(APIView):
 
     def post(self, request) -> Response:
         try:
-
-            token = request.COOKIES.get('jwt')
-            if not token:
-                raise AuthenticationFailed('Unauthenticated!')
-
-            try:
-                print(token)
-                payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-                print(payload)
-            except jwt.ExpiredSignatureError:
-                raise AuthenticationFailed('Unauthenticated!')
-
-            # user = User.objects.filter(id=payload['id']).first()
+            payload = check_user_login_or_not(request)
             _user_id = payload['id']
-            _group_name = request.POST.get('group_name')
-
-            _group_type = request.POST.get('type')
-            _description = request.POST.get('description')
-            _user_ids_list = json.loads(request.POST.get('users'))
+            _group_name = request.data.get('group_name')
+            print(_group_name)
+            _group_type = request.data.get('type')
+            _description = request.data.get('description')
+            _user_ids_list = json.loads(request.data.get('users'))
             createdby = User.objects.filter(id=_user_id).first()
 
             if not _same_groupname_user_exists(createdby, _group_name):
@@ -91,21 +69,12 @@ class create_group(APIView):
             }), status=500)
 
 
-class get_group_data_for_user(ListAPIView):
+class get_group_data_for_user(APIView):
     serializer_class = GroupSerializer
 
     def get(self, request) -> Response:
         try:
-            token = request.COOKIES.get('jwt')
-            if not token:
-                raise AuthenticationFailed('Unauthenticated!')
-
-            try:
-                print(token)
-                payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-                print(payload)
-            except jwt.ExpiredSignatureError:
-                raise AuthenticationFailed('Unauthenticated!')
+            payload = check_user_login_or_not(request)
 
             _user_id = payload['id']
             _user = User.objects.filter(id=_user_id).first()
@@ -121,16 +90,6 @@ class get_group_data_for_user(ListAPIView):
 
             _group_data = Group.objects.filter(id__in=_list_group_id).values()
 
-            serializer = GroupSerializer(_group_data, many=True)
-            # print(serializer.data)
-
-            # queryset = _group_data.first()
-            # print(queryset)
-            # print(type(_group_data))
-            # return Response(json.dumps({
-            #     'data': serializer.data,
-            #     'status': 'Success'
-            # }, default=str), status=200)
             return Response(_group_data)
         except Exception as e:
             print(e)
@@ -144,9 +103,15 @@ class get_group_data_for_user(ListAPIView):
 class get_group_detail(APIView):
     serializer_class = GroupSerializer
 
+    def get(self, request):
+        response = get_group_data_for_user.get(self, request)
+        return response
+
     def post(self, request):
         try:
-            _group_id = request.POST.get('group_id')
+            payload = check_user_login_or_not(request)
+
+            _group_id = request.data.get('group_id')
             _group_obj = Group.objects.filter(id=_group_id, is_active=1).values()
             print(_group_obj.exists())
             if not _group_obj.exists():
@@ -165,17 +130,11 @@ class get_group_detail(APIView):
             _group_users = GroupToUser.objects.filter(group_id=_group_obj.first()['id']).values_list('user_id_id',
                                                                                                      flat=True)
             _list_users = list(_group_users)
-            _list_user_objs = list(User.objects.filter(id__in=_list_users).values())
+            _list_user_objs = list(
+                User.objects.filter(id__in=_list_users).values('id', 'first_name', 'last_name', 'email'))
             _group_details['users'] = _list_user_objs
-            # serializer = GroupUserSerializer(_group_details, many=True)
-            # print(_group_details)
-            # print(serializer.data)
 
             return Response(_group_details)
-            # return Response(json.dumps({
-            #     'data': _group_details,
-            #     'status': 'success'
-            # }, default=str), status=200)
         except Exception as e:
             error_msg = "Internal Error Occurred"
             print(e)
@@ -186,9 +145,15 @@ class get_group_detail(APIView):
 
 
 class delete_group(APIView):
+    def get(self, request):
+        response = get_group_data_for_user.get(self, request)
+
+        return response
+
     def post(self, request):
         try:
-            _group_id = request.POST.get('group_id')
+            payload = check_user_login_or_not(request)
+            _group_id = request.data.get('group_id')
             print(_group_id)
             __group_obj = Group.objects.filter(id=_group_id, is_active=1)
             print(__group_obj)
@@ -218,15 +183,23 @@ class delete_group(APIView):
             }), status=500)
 
 
-
-
 class remove_member_from_group(APIView):
+    def get(self, request):
+        response = get_group_data_for_user.get(self, request)
+
+        for i in range(len(response.data)):
+            response.data[i]['users_list'] = _group_users = GroupToUser.objects.filter(group_id=response.data[i]['id'],
+                                                                                       is_active=1).values_list(
+                'user_id_id', flat=True)
+        return response
 
     def post(self, request) -> Response:
         try:
 
-            _group_id = request.POST.get('group_id')
-            _remove_userid = request.POST.get('member_id')
+            payload = check_user_login_or_not(request)
+
+            _group_id = request.data.get('group_id')
+            _remove_userid = request.data.get('member_id')
 
             print(_group_id)
             print(_remove_userid)
@@ -254,13 +227,23 @@ class remove_member_from_group(APIView):
             }), status=500)
 
 
-
 class add_new_member(APIView):
+    def get(self, request):
+        response = get_group_data_for_user.get(self, request)
+
+        for i in range(len(response.data)):
+            response.data[i]['users_list'] = _group_users = GroupToUser.objects.filter(group_id=response.data[i]['id'],
+                                                                                       is_active=1).values_list(
+                'user_id_id', flat=True)
+        return response
+
     def post(self, request) -> Response:
         try:
 
-            _group_id = request.POST.get('group_id')
-            _member_id = request.POST.get('member_id')
+            payload = check_user_login_or_not(request)
+
+            _group_id = request.data.get('group_id')
+            _member_id = request.data.get('member_id')
 
             _group_obj = Group.objects.filter(id=_group_id, is_active=1).first()
             _member_obj = User.objects.filter(id=_member_id).first()
@@ -292,20 +275,10 @@ class add_new_member(APIView):
             }), status=500)
 
 
-
-
 class UserGroupDebts(APIView):
     def get(self, request, id):
-        token = request.COOKIES.get('jwt')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
 
-        try:
-            print(token)
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-            print(payload)
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
+        payload = check_user_login_or_not(request)
 
         user_id = payload['id']
         # result = Expense.objects.prefetch_related('expense_user').all()
@@ -316,91 +289,37 @@ class UserGroupDebts(APIView):
 
 
 class Pay(APIView):
+    serializer_class = DebtsSerializer
+
+    def get(self, request, id):
+        response = UserGroupDebts.get(self, request, id)
+        return response
+
     def post(self, request, id):
-
-        expense_id = request.POST.get('expense_id')
-        receive = request.POST.get('bearer')
-        pay_amt = request.POST.get('amount')
-        print(request)
-
-        token = request.COOKIES.get('jwt')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
-
-        try:
-            print(token)
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-            print(payload)
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
+        payload = check_user_login_or_not(request)
         print(1)
         user_id = payload['id']
         print(user_id)
 
-
+        expense_id = request.data.get('expense_id')
+        receive = request.data.get('bearer')
+        pay_amt = request.data.get('amount')
         print(expense_id)
         print(pay_amt)
         print(receive)
         print(id)
         pay_obj = get_object_or_404(Debts, exp_id=expense_id, group_id=id, payer=user_id, bearer=receive)
         print(3)
-        if pay_amt == pay_obj.amt:
+        remaining_debt = pay_obj.debt - pay_obj.amt_paid
+        if pay_obj.is_paid:
+            return Response("Already Paid")
+        elif pay_amt == remaining_debt:
+            pay_obj.amt_paid += pay_amt
             pay_obj.is_paid = True
-        elif pay_amt < pay_obj.amt:
-            pay_obj.amt -= pay_amt
+        elif pay_amt < remaining_debt:
+            pay_obj.amt_paid += pay_amt
         else:
             return Response("Enter the Correct Amount")
         update_user_balance(expense_id, user_id, receive, pay_amt)
         pay_obj.save()
-
-# class InviteCreate(DetailView):
-#
-#     def get_queryset(self):
-#         return self.request.
-# # Create your views here.
-
-# class GroupsList(APIView):
-#     def get(self, request):
-#         queryset = Group.objects.all()
-#         serializer = GroupSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
-#     def post(self, request):
-#         serializer = GroupSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response(serializer.data)
-
-
-# class GroupDetails(APIView):
-#     def get(self, request, id):
-#         group = get_object_or_404(Group, pk=id)
-#         serializer = GroupSerializer(group)
-#         return Response(serializer.data)
-
-#     def put(self, request, id):
-#         group = get_object_or_404(Group, pk=id)
-#         serializer = GroupSerializer(group, data=request.data)
-#         serializer.is_valid()
-#         serializer.save()
-#         return Response(serializer.data)
-
-#     def delete(self, request, id):
-#         group = get_object_or_404(Group, pk=id)
-#         group.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# class GroupUsersList(APIView):
-#     def get(self, request, id):
-#         queryset = GroupToUser.objects.filter(group_id=id)
-#         serializer = GroupToUserSerializer(queryset, many=True)
-#         return Response(serializer.data)
-
-
-# class AddUserToGroup(APIView):
-#     def post(self, request):
-#         serializer = GroupToUserSerializer(data=request.data)
-#         serializer.is_valid()
-#         serializer.save()
-#         return Response(serializer.data)
+        return Response("Successfully Paid")

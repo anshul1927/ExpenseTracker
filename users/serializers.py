@@ -18,6 +18,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         )
         return user
 
+class userSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = ('first_name', 'last_name', 'email')
 
 class signInUserSerializer(serializers.ModelSerializer):
     class Meta:

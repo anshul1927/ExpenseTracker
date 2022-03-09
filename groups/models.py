@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from users.models import User
 
+
 # Create your models here.
 
 
@@ -24,23 +25,11 @@ class Group(models.Model):
     group_description = models.TextField(blank=True, null=True)
     created_at = models.DateField(auto_now=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
-    created_by = models.ForeignKey(User,db_column='created_by', unique=False, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, db_column='created_by', unique=False, on_delete=models.CASCADE)
     is_active = models.IntegerField(blank=True, null=True)
 
     def __dir__(self) -> str:
         return self.group_name
-
-    @property
-    def invite_code(self):
-        timestamp = int(mktime(self.created_at.timetuple())*1000)
-        digest = hashlib.sha1(str(timestamp) + str(self.pk)).hexdigest()
-        print("digest :- ", digest)
-        return str(digest)[2:12]
-
-    @property
-    def invite_url(self):
-        return reverse('invite_detail', kwargs={'pk': self.pk, 'hash': self.invite_code})
-
 
     class Meta:
         unique_together = ['group_name', 'created_by']

@@ -27,5 +27,6 @@ class Debts(models.Model):
     group_id = models.ForeignKey(Group, on_delete=models.CASCADE)
     payer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payer')
     bearer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bearer')
-    amt = models.DecimalField(max_digits=10, decimal_places=2)
+    debt = models.DecimalField(max_digits=10, decimal_places=2)
+    amt_paid = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
